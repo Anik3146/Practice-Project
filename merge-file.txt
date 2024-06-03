@@ -1,1 +1,1 @@
- local repository
+Reverse commit local repository
