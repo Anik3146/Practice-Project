@@ -38,7 +38,7 @@ export default function ValidationComp(){
     <div className="container mt-3">
         <div className="container mt-3 mb-2">
       
-        <Form noValidate validated={validStatus}>
+        <Form className="mb-2" noValidate validated={validStatus}>
         <Row className="mb-3">
         <Form.Group as={Col} md="6" controlId="validationCustom03">
           <Form.Label>City</Form.Label>
@@ -49,20 +49,24 @@ export default function ValidationComp(){
         </Form.Group>
         </Row>
         </Form>
-
-        <Form noValidate validated={validStatus2}>
-        <Row className="mb-3">
-        <InputGroup as={Col} md="6" hasValidation className="">
-        <Form.Control type="text" onChange={handleChange2} required isInvalid = {!validStatus2}/>
-        <Form.Control.Feedback type="invalid">
-        Please choose a username.
-        </Form.Control.Feedback>
+    <Row>
+        <Col xs={12} md={6}>
+        <Form className="mt-2" noValidate validated={validStatus2}>
+        <InputGroup hasValidation >
+          <Form.Control
+            type="text"
+            onChange={handleChange2}
+            required
+            isInvalid={!validStatus2}
+          />
+          <Form.Control.Feedback type="invalid">
+            Please choose a username.
+          </Form.Control.Feedback>
         </InputGroup>
-        <FormText muted>
-        Username should not be empty.
-        </FormText>
-        </Row>
-        </Form>   
+    </Form>  
+        </Col>
+    </Row>
+    
         </div>
 
      
