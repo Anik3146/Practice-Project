@@ -3,14 +3,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import TestPage from "./testPage";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ReactDOM } from "react";
 import NavbarComp from "./navbar";
 import FormComp from "./form";
 import { GrMenu } from "react-icons/gr";
 import Image from "next/image";
 import image from "../public/image.png";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 import {
     Button,
@@ -26,17 +26,76 @@ import {
 } from "react-bootstrap";
 import CanvasMenu from "./canvasMenuComponent";
 import BootForm from "./bootForm";
+import Link from "next/link";
+import { v4 as uuidv4 } from "uuid";
+import ListForm from "./listForm";
 
 export default function Page() {
-    const menu: string[] = ["create form", "list item", "update form"];
-
+    const menu: string[] = ["create form", "list item"];
     const [selectForm, setSelectForm] = useState<JSX.Element | null>(null);
+    const [listItem, setListItem] = useState<JSX.Element | null>(null);
+
+    class person {
+        constructor(
+            public id: string,
+            public nameFirst: string,
+            public nameLast: string,
+            public email: string
+        ) {}
+    }
+    const [formData, setFormData] = useState({
+        id: uuidv4(),
+        firstName: "",
+        lastName: "",
+        email: "",
+    });
+
+    const [obj, setObj] = useState<person[]>([]);
+
+    const receiveDataFromChild = (data: any) => {
+        setFormData(data);
+    };
+
+    useEffect(() => {
+        const newPerson = new person(
+            formData.id,
+            formData.firstName,
+            formData.lastName,
+            formData.email
+        );
+        const existingIndex = obj.findIndex(
+            (person) => person.id === formData.id
+        );
+        if (
+            newPerson.nameFirst != "" ||
+            newPerson.nameLast != "" ||
+            newPerson.email != ""
+        ) {
+            if (existingIndex !== -1) {
+                setObj((prevObj) => {
+                    const updatedObj = [...prevObj];
+                    updatedObj[existingIndex] = newPerson;
+                    return updatedObj;
+                });
+            } else setObj((prevObj) => [...prevObj, newPerson]);
+            console.log(obj);
+        }
+    }, [formData]);
+
+    useEffect(() => {
+        console.log(obj);
+    }, [obj]);
 
     const handleClick = (item: any) => {
-        if (item == "create form") setSelectForm(<BootForm />);
-        else {
+        if (item == "create form") {
+            setListItem(null);
+            setSelectForm(<BootForm sendDataToParent={receiveDataFromChild} />);
+        } else if (item == "list item") {
             setSelectForm(null);
-            console.log(`clicked on ${item}`);
+            setListItem(<ListForm obj={obj} setObj={setObj} />);
+        } else {
+            setListItem(null);
+            setSelectForm(null);
         }
     };
 
@@ -197,10 +256,11 @@ export default function Page() {
                     </div>
                     {/*main body*/}
                     <main className="container-fluid col-6 mt-3 text-white justify-items-center">
-                        {selectForm === null && (
+                        {selectForm === null && listItem == null && (
                             <h1 className="text-center">Dashboard</h1>
                         )}
                         {selectForm}
+                        {listItem}
                     </main>
                 </div>
             </div>
