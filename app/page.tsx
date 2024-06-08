@@ -78,6 +78,7 @@ export default function Page() {
 
     useEffect(() => {
         handleClick("list item");
+        console.log(obj);
     }, [obj]);
 
     return (
