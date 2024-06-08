@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Button, Card, Col, Row, Table } from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Modal, Form } from "react-bootstrap";
 import { Person } from "./model";
 
 export default function ListForm({ obj, setObj, setToggler }: any) {
@@ -18,15 +18,10 @@ export default function ListForm({ obj, setObj, setToggler }: any) {
     };
 
     const handleEdit = (index: number) => {
-        if (editIndex === index) {
-            setEditIndex(-1);
-        } else {
-            setEditIndex(index);
-            setPerson(obj[index]);
-            setShowModal(true);
-        }
+        setEditIndex(index);
+        setPerson(obj[index]);
+        setShowModal(true);
     };
-
     const handleDelete = (index: number) => {
         if (editIndex == -1) {
             const updatedObj = [...obj];
@@ -38,29 +33,27 @@ export default function ListForm({ obj, setObj, setToggler }: any) {
         }
     };
 
-    const handleSave = (index: number) => {
-        setObj(() => {
-            obj[index] = person;
-            return obj;
+    const handleSave = () => {
+        setObj((prevObj: any) => {
+            const updatedObj = [...prevObj];
+            updatedObj[editIndex] = person;
+            return updatedObj;
         });
         setToggler(true);
         setShowModal(false);
         setEditIndex(-1);
     };
 
-    const handleCancel = (index: any) => {
+    const handleCancel = () => {
+        setShowModal(false);
         setEditIndex(-1);
     };
 
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        index: number,
-        propertyName: string
-    ) => {
-        const { value } = e.target;
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
         setPerson((prevPerson) => ({
             ...prevPerson,
-            [propertyName]: value,
+            [name]: value,
         }));
     };
 
@@ -88,124 +81,23 @@ export default function ListForm({ obj, setObj, setToggler }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {obj.map((item: any, index: any) => (
+                            {obj.map((item: Person, index: number) => (
                                 <tr key={index}>
+                                    <td>{item.nameFirst}</td>
+                                    <td>{item.nameLast}</td>
+                                    <td>{item.email}</td>
                                     <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                value={person.nameFirst}
-                                                name="nameFirst"
-                                                onChange={(e) =>
-                                                    handleInputChange(
-                                                        e,
-                                                        index,
-                                                        "nameFirst"
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <span>{item.nameFirst}</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                value={person.nameLast}
-                                                onChange={(e) =>
-                                                    handleInputChange(
-                                                        e,
-                                                        index,
-                                                        "nameLast"
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <span>{item.nameLast}</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <input
-                                                type="text"
-                                                value={person.email}
-                                                onChange={(e) =>
-                                                    handleInputChange(
-                                                        e,
-                                                        index,
-                                                        "email"
-                                                    )
-                                                }
-                                            />
-                                        ) : (
-                                            <span>{item.email}</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {editIndex === index ? (
-                                            <>
-                                                <Button
-                                                    variant="success"
-                                                    title="Save"
-                                                    onClick={() =>
-                                                        handleSave(index)
-                                                    }
-                                                >
-                                                    Save
-                                                </Button>
-                                            </>
-                                        ) : (
-                                            <Button
-                                                onClick={() =>
-                                                    handleEdit(index)
-                                                }
-                                                variant="secondary"
-                                                title="Edit"
-                                                data-toggle="tooltip"
-                                            >
-                                                Edit
-                                            </Button>
-                                        )}
-                                        <div
-                                            style={{
-                                                width: "10px",
-                                                display: "inline-block",
-                                            }}
-                                        ></div>
-                                        <hr
-                                            style={{
-                                                height: "1px",
-                                                width: "1px",
-                                                border: "none",
-                                                backgroundColor: "#ccc",
-                                                margin: "0 10px",
-                                                display: "inline-block",
-                                            }}
-                                        />
                                         <Button
-                                            onClick={() => {
-                                                if (editIndex === index) {
-                                                    handleCancel(index);
-                                                } else {
-                                                    handleDelete(index);
-                                                }
-                                            }}
-                                            variant={
-                                                editIndex === index
-                                                    ? "secondary"
-                                                    : "danger"
-                                            }
-                                            title={
-                                                editIndex === index
-                                                    ? "Cancel"
-                                                    : "Delete"
-                                            }
-                                            data-toggle="tooltip"
+                                            onClick={() => handleEdit(index)}
+                                            variant="secondary"
                                         >
-                                            {editIndex === index
-                                                ? "Cancel"
-                                                : "Delete"}
+                                            Edit
+                                        </Button>{" "}
+                                        <Button
+                                            onClick={() => handleDelete(index)}
+                                            variant="danger"
+                                        >
+                                            Delete
                                         </Button>
                                     </td>
                                 </tr>
@@ -214,6 +106,52 @@ export default function ListForm({ obj, setObj, setToggler }: any) {
                     </table>
                 </div>
             </div>
+
+            {/* Modal for Editing */}
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Person</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="firstName">
+                            <Form.Label>First Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="nameFirst"
+                                value={person.nameFirst}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="lastName">
+                            <Form.Label>Last Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="nameLast"
+                                value={person.nameLast}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="email">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                type="email"
+                                name="email"
+                                value={person.email}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleSave}>
+                        Save Changes
+                    </Button>
+                    <Button variant="secondary" onClick={handleCancel}>
+                        Cancel
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }
