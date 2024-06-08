@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Table } from "react-bootstrap";
+import { Person } from "./model";
 
-export default function ListForm({ obj, setObj }: any) {
+export default function ListForm({ obj, setObj, setToggler }: any) {
     const [editIndex, setEditIndex] = useState(-1);
-    const [tempChanges, setTempChanges] = useState<{ [key: number]: any }>({});
+    const [showModal, setShowModal] = useState(false);
+    const [person, setPerson] = useState<Person>({
+        id: "",
+        nameFirst: "",
+        nameLast: "",
+        email: "",
+    });
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setEditIndex(-1);
+    };
 
     const handleEdit = (index: number) => {
         if (editIndex === index) {
             setEditIndex(-1);
         } else {
             setEditIndex(index);
-            setTempChanges(obj[index]);
+            setPerson(obj[index]);
+            setShowModal(true);
         }
     };
 
@@ -19,21 +32,23 @@ export default function ListForm({ obj, setObj }: any) {
             const updatedObj = [...obj];
             updatedObj.splice(index, 1);
             setObj(updatedObj);
+            setToggler(true);
         } else {
             setEditIndex(-1);
         }
     };
 
     const handleSave = (index: number) => {
+        setObj(() => {
+            obj[index] = person;
+            return obj;
+        });
+        setToggler(true);
+        setShowModal(false);
         setEditIndex(-1);
     };
 
     const handleCancel = (index: any) => {
-        setObj((prev: typeof obj) => {
-            obj[index] = tempChanges;
-            return obj;
-        });
-
         setEditIndex(-1);
     };
 
@@ -43,14 +58,11 @@ export default function ListForm({ obj, setObj }: any) {
         propertyName: string
     ) => {
         const { value } = e.target;
-        setObj((prevObj: typeof obj) => {
-            const updatedObj = [...prevObj];
-            updatedObj[index] = { ...updatedObj[index], [propertyName]: value };
-            return updatedObj;
-        });
+        setPerson((prevPerson) => ({
+            ...prevPerson,
+            [propertyName]: value,
+        }));
     };
-
-    useEffect(() => {}, [tempChanges]);
 
     return (
         <>
@@ -82,7 +94,7 @@ export default function ListForm({ obj, setObj }: any) {
                                         {editIndex === index ? (
                                             <input
                                                 type="text"
-                                                value={item.nameFirst}
+                                                value={person.nameFirst}
                                                 name="nameFirst"
                                                 onChange={(e) =>
                                                     handleInputChange(
@@ -100,7 +112,7 @@ export default function ListForm({ obj, setObj }: any) {
                                         {editIndex === index ? (
                                             <input
                                                 type="text"
-                                                value={item.nameLast}
+                                                value={person.nameLast}
                                                 onChange={(e) =>
                                                     handleInputChange(
                                                         e,
@@ -117,7 +129,7 @@ export default function ListForm({ obj, setObj }: any) {
                                         {editIndex === index ? (
                                             <input
                                                 type="text"
-                                                value={item.email}
+                                                value={person.email}
                                                 onChange={(e) =>
                                                     handleInputChange(
                                                         e,

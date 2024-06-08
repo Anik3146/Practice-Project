@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-import { Button, Col, Form, Row } from "react-bootstrap";
-
-export default function BootForm() {
-    return (
-        <>
-            <Form className="justify-auto">
-                <h2 className="text-center my-4">Bootstrap Form</h2>
-=======
 import { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row, Toast } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
 
 export default function BootForm({ sendDataToParent }: any) {
+    const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
         id: uuidv4(),
         firstName: "",
@@ -21,6 +13,7 @@ export default function BootForm({ sendDataToParent }: any) {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
+        setShow(true);
         sendDataToParent(formData);
     };
 
@@ -36,7 +29,7 @@ export default function BootForm({ sendDataToParent }: any) {
         <>
             <Form onSubmit={handleSubmit} className="justify-auto">
                 <h2 className="text-center my-4">Bootstrap Form </h2>
->>>>>>> main
+
                 <Col>
                     <Row className="md-2 my-2">
                         <Form.Group controlId="firstName">
@@ -45,10 +38,7 @@ export default function BootForm({ sendDataToParent }: any) {
                                     type="text"
                                     placeholder="Enter your first name"
                                     name="firstName"
-<<<<<<< HEAD
-=======
                                     onChange={onInputChange}
->>>>>>> main
                                 />
                                 <label htmlFor="floatingInputCustom">
                                     First Name
@@ -63,10 +53,7 @@ export default function BootForm({ sendDataToParent }: any) {
                                     type="text"
                                     placeholder="Enter your last name"
                                     name="lastName"
-<<<<<<< HEAD
-=======
                                     onChange={onInputChange}
->>>>>>> main
                                 />
                                 <label htmlFor="floatingInputCustom">
                                     Last Name
@@ -81,10 +68,7 @@ export default function BootForm({ sendDataToParent }: any) {
                                     type="text"
                                     placeholder="Enter your email address"
                                     name="email"
-<<<<<<< HEAD
-=======
                                     onChange={onInputChange}
->>>>>>> main
                                 />
                                 <label htmlFor="floatingInputCustom">
                                     Email Address
@@ -93,6 +77,31 @@ export default function BootForm({ sendDataToParent }: any) {
                         </Form.Group>
                     </Row>
                 </Col>
+                <Row className="justify-content-center">
+                    <Col xs={6}>
+                        <Toast
+                            onClose={() => setShow(false)}
+                            show={show}
+                            delay={3000}
+                            autohide
+                            style={{ backgroundColor: "green" }} // Set background color to green
+                        >
+                            <Toast.Header>
+                                <img
+                                    src="holder.js/20x20?text=%20"
+                                    className="rounded me-2"
+                                    alt=""
+                                />
+                                <strong className="me-auto">Success</strong>{" "}
+                                {/* Change the title */}
+                                <small>Just now</small>
+                            </Toast.Header>
+                            <Toast.Body>
+                                Form submitted successfully!
+                            </Toast.Body>
+                        </Toast>
+                    </Col>
+                </Row>
 
                 <Button className="mt-2" variant="secondary" type="submit">
                     Submit
