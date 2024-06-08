@@ -43,48 +43,25 @@ export default function Page() {
             public email: string
         ) {}
     }
-    const [formData, setFormData] = useState({
-        id: uuidv4(),
-        firstName: "",
-        lastName: "",
-        email: "",
-    });
 
     const [obj, setObj] = useState<person[]>([]);
 
     const receiveDataFromChild = (data: any) => {
-        setFormData(data);
-    };
-
-    useEffect(() => {
         const newPerson = new person(
-            formData.id,
-            formData.firstName,
-            formData.lastName,
-            formData.email
+            (data.id = uuidv4()),
+            data.firstName,
+            data.lastName,
+            data.email
         );
-        const existingIndex = obj.findIndex(
-            (person) => person.id === formData.id
-        );
+
         if (
             newPerson.nameFirst != "" ||
             newPerson.nameLast != "" ||
             newPerson.email != ""
         ) {
-            if (existingIndex !== -1) {
-                setObj((prevObj) => {
-                    const updatedObj = [...prevObj];
-                    updatedObj[existingIndex] = newPerson;
-                    return updatedObj;
-                });
-            } else setObj((prevObj) => [...prevObj, newPerson]);
-            console.log(obj);
+            setObj((prevObj) => [...prevObj, newPerson]);
         }
-    }, [formData]);
-
-    useEffect(() => {
-        console.log(obj);
-    }, [obj]);
+    };
 
     const handleClick = (item: any) => {
         if (item == "create form") {
@@ -98,6 +75,10 @@ export default function Page() {
             setSelectForm(null);
         }
     };
+
+    useEffect(() => {
+        handleClick("list item");
+    }, [obj]);
 
     return (
         <div>

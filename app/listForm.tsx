@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Row, Table } from "react-bootstrap";
 
 export default function ListForm({ obj, setObj }: any) {
@@ -7,8 +7,9 @@ export default function ListForm({ obj, setObj }: any) {
         updatedObj.splice(index, 1);
         setObj(updatedObj);
     };
-
-    useEffect(() => {}, [obj]);
+    useEffect(() => {
+        console.log(obj);
+    }, [obj]);
 
     return (
         <>
@@ -18,7 +19,7 @@ export default function ListForm({ obj, setObj }: any) {
                         <div className="row">
                             <div className="col-sm-8">
                                 <h2>
-                                    <b>List Details</b>
+                                    <b>List details</b>
                                 </h2>
                             </div>
                             <div className="col-sm-4"></div>
@@ -40,27 +41,40 @@ export default function ListForm({ obj, setObj }: any) {
                                     <td>{item.nameLast}</td>
                                     <td>{item.email}</td>
                                     <td>
-                                        <a
-                                            className="add"
-                                            title="Add"
-                                            data-toggle="tooltip"
-                                        >
-                                            <i className="material-icons"></i>
-                                        </a>
-                                        <a
-                                            className="edit"
+                                        <Button
+                                            variant="secondary"
                                             title="Edit"
                                             data-toggle="tooltip"
                                         >
-                                            <i className="material-icons"></i>
-                                        </a>
-                                        <a
-                                            className="delete"
+                                            Edit
+                                        </Button>
+                                        {/* Divider gap */}
+                                        <div
+                                            style={{
+                                                width: "10px",
+                                                display: "inline-block",
+                                            }}
+                                        ></div>
+                                        {/* Divider */}
+                                        <hr
+                                            style={{
+                                                height: "1px",
+                                                width: "1px",
+                                                border: "none",
+                                                backgroundColor: "#ccc",
+                                                margin: "0 10px",
+                                                display: "inline-block",
+                                            }}
+                                        />
+                                        {/* Delete button */}
+                                        <Button
+                                            onClick={() => handleDelete(index)}
+                                            variant="danger"
                                             title="Delete"
                                             data-toggle="tooltip"
                                         >
-                                            <i className="material-icons"></i>
-                                        </a>
+                                            Delete
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}
