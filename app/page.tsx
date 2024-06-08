@@ -3,14 +3,22 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import TestPage from "./testPage";
+<<<<<<< HEAD
 import React, { useState } from "react";
+=======
+import React, { useEffect, useState } from "react";
+>>>>>>> main
 import { ReactDOM } from "react";
 import NavbarComp from "./navbar";
 import FormComp from "./form";
 import { GrMenu } from "react-icons/gr";
 import Image from "next/image";
 import image from "../public/image.png";
+<<<<<<< HEAD
 import { useRouter } from "next/navigation";
+=======
+import { useRouter } from "next/router";
+>>>>>>> main
 
 import {
     Button,
@@ -26,6 +34,7 @@ import {
 } from "react-bootstrap";
 import CanvasMenu from "./canvasMenuComponent";
 import BootForm from "./bootForm";
+<<<<<<< HEAD
 
 export default function Page() {
     const menu: string[] = ["create form", "list item", "update form"];
@@ -40,6 +49,63 @@ export default function Page() {
         }
     };
 
+=======
+import Link from "next/link";
+import { v4 as uuidv4 } from "uuid";
+import ListForm from "./listForm";
+
+export default function Page() {
+    const menu: string[] = ["create form", "list item"];
+    const [selectForm, setSelectForm] = useState<JSX.Element | null>(null);
+    const [listItem, setListItem] = useState<JSX.Element | null>(null);
+
+    class person {
+        constructor(
+            public id: string,
+            public nameFirst: string,
+            public nameLast: string,
+            public email: string
+        ) {}
+    }
+
+    const [obj, setObj] = useState<person[]>([]);
+
+    const receiveDataFromChild = (data: any) => {
+        const newPerson = new person(
+            (data.id = uuidv4()),
+            data.firstName,
+            data.lastName,
+            data.email
+        );
+
+        if (
+            newPerson.nameFirst != "" ||
+            newPerson.nameLast != "" ||
+            newPerson.email != ""
+        ) {
+            setObj((prevObj) => [...prevObj, newPerson]);
+        }
+    };
+
+    const handleClick = (item: any) => {
+        if (item == "create form") {
+            setListItem(null);
+            setSelectForm(<BootForm sendDataToParent={receiveDataFromChild} />);
+        } else if (item == "list item") {
+            setSelectForm(null);
+            setListItem(<ListForm obj={obj} setObj={setObj} />);
+        } else {
+            setListItem(null);
+            setSelectForm(null);
+        }
+    };
+
+    useEffect(() => {
+        handleClick("list item");
+        console.log(obj);
+    }, [obj]);
+
+>>>>>>> main
     return (
         <div>
             <header
@@ -197,10 +263,18 @@ export default function Page() {
                     </div>
                     {/*main body*/}
                     <main className="container-fluid col-6 mt-3 text-white justify-items-center">
+<<<<<<< HEAD
                         {selectForm === null && (
                             <h1 className="text-center">Dashboard</h1>
                         )}
                         {selectForm}
+=======
+                        {selectForm === null && listItem == null && (
+                            <h1 className="text-center">Dashboard</h1>
+                        )}
+                        {selectForm}
+                        {listItem}
+>>>>>>> main
                     </main>
                 </div>
             </div>
